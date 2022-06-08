@@ -111,17 +111,57 @@ const typeDefs = gql`
   type Subscription {
     #User
     userCreated: User!
+    userUpdated: User!
     userDeleted: User!
+
+    #Post
+    postCreated: Post!
+    postUpdated: Post!
+    postDeleted: Post!
+
+    #Comment
+    commentCreated: Comment!
+    commentUpdated: Comment!
+    commentDeleted: Comment!
   }
 `;
 
 const resolvers = {
   Subscription: {
+    //User
+
     userCreated: {
       subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("userCreated"),
     },
     userDeleted: {
       subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("userDeleted"),
+    },
+    userUpdated: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("userUpdated"),
+    },
+
+    // Post
+
+    postCreated: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("postCreated"),
+    },
+    postUpdated: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("postUpdated"),
+    },
+    postDeleted: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("postDeleted"),
+    },
+
+    // Comment
+
+    commentCreated: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("commentCreated"),
+    },
+    commentUpdated: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("commentUpdated"),
+    },
+    commentDeleted: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("commentDeleted"),
     },
   },
   Mutation: {
@@ -134,7 +174,7 @@ const resolvers = {
       return user;
     },
 
-    updateUser: (_, { id, data }) => {
+    updateUser: (_, { id, data }, { pubsub }) => {
       const user_index = users.findIndex((user) => user.id === id);
 
       if (user_index === -1) {
@@ -144,6 +184,8 @@ const resolvers = {
         ...users[user_index],
         ...data,
       };
+
+      pubsub.publish("userUpdated", { userUpdated: users[user_index] });
       return users[user_index];
     },
 
@@ -169,14 +211,15 @@ const resolvers = {
     },
 
     //Post
-    createPost: (_, { data }) => {
+    createPost: (_, { data }, { pubsub }) => {
       const post = { id: nanoid(), ...data };
       posts.push(post);
 
+      pubsub.publish("postCreated", { postCreated: post });
       return post;
     },
 
-    updatePost: (_, { id, data }) => {
+    updatePost: (_, { id, data }, { pubsub }) => {
       const post_index = posts.findIndex((post) => post.id === id);
       if (post_index === -1) {
         throw new Error("Post not found");
@@ -186,16 +229,19 @@ const resolvers = {
         ...data,
       };
 
+      pubsub.publish("postUpdated", { postUpdated: posts[post_index] });
       return posts[post_index];
     },
 
-    deletePost: (_, { id }) => {
+    deletePost: (_, { id }, { pubsub }) => {
       const post_index = posts.findIndex((post) => post.id === id);
       const deleted_post = posts.find((post) => post.id === id);
       if (post_index === -1) {
         throw new Error("Post not found");
       }
       posts.splice(post_index, 1);
+
+      pubsub.publish("postDeleted", { postDeleted: deleted_post });
       return deleted_post;
     },
 
@@ -208,17 +254,18 @@ const resolvers = {
     },
 
     //Comment
-    createComment: (_, { data }) => {
+    createComment: (_, { data }, { pubsub }) => {
       const comment = {
         id: nanoid(),
         ...data,
       };
       comments.push(comment);
 
+      pubsub.publish("commentCreated", { commentCreated: comment });
       return comment;
     },
 
-    updateComment: (_, { id, data }) => {
+    updateComment: (_, { id, data }, { pubsub }) => {
       const comment_index = comments.findIndex((comment) => comment.id === id);
       if (comment_index === -1) {
         throw new Error("Comment not found");
@@ -227,10 +274,13 @@ const resolvers = {
         ...comments[comment_index],
         ...data,
       };
+      pubsub.publish("commentUpdated", {
+        commentUpdated: comments[comment_index],
+      });
       return comments[comment_index];
     },
 
-    deleteComment: (_, { id }) => {
+    deleteComment: (_, { id }, { pubsub }) => {
       const comment_index = comments.findIndex((comment) => comment.id === id);
       const deleted_comment = comments.find((comment) => comment.id === id);
 
@@ -239,6 +289,7 @@ const resolvers = {
       }
 
       comments.splice(comment_index, 1);
+      pubsub.publish("commentDeleted", { commentDeleted: deleted_comment });
       return deleted_comment;
     },
 
