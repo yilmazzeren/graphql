@@ -9,7 +9,8 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 const gql = require("graphql-tag");
 const express = require("express");
 const http = require("http");
-const { PubSub, withFilter } = require("graphql-subscriptions");
+const { withFilter } = require("graphql-subscriptions");
+const pubsub = require("./pubsub");
 
 const typeDefs = gql`
   #User
@@ -359,7 +360,7 @@ const resolvers = {
   const app = express();
   const httpServer = http.createServer(app);
   const schema = makeExecutableSchema({ typeDefs, resolvers });
-  const pubsub = new PubSub();
+  // const pubsub = new PubSub();
 
   const server = new ApolloServer({
     schema,
