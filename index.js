@@ -9,7 +9,7 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 const gql = require("graphql-tag");
 const express = require("express");
 const http = require("http");
-const { PubSub } = require("graphql-subscriptions");
+const { PubSub, withFilter } = require("graphql-subscriptions");
 
 const typeDefs = gql`
   #User
@@ -115,12 +115,12 @@ const typeDefs = gql`
     userDeleted: User!
 
     #Post
-    postCreated: Post!
+    postCreated(user_id: ID): Post!
     postUpdated: Post!
     postDeleted: Post!
 
     #Comment
-    commentCreated: Comment!
+    commentCreated(post_id: ID): Comment!
     commentUpdated: Comment!
     commentDeleted: Comment!
   }
@@ -143,7 +143,14 @@ const resolvers = {
     // Post
 
     postCreated: {
-      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("postCreated"),
+      subscribe: withFilter(
+        (_, __, { pubsub }) => pubsub.asyncIterator("postCreated"),
+        (payload, variables) => {
+          return variables.user_id
+            ? payload.postCreated.user_id === variables.user_id
+            : true;
+        }
+      ),
     },
     postUpdated: {
       subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("postUpdated"),
@@ -155,7 +162,14 @@ const resolvers = {
     // Comment
 
     commentCreated: {
-      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("commentCreated"),
+      subscribe: withFilter(
+        (_, __, { pubsub }) => pubsub.asyncIterator("commentCreated"),
+        (payload, variables) => {
+          return variables.post_id
+            ? payload.commentCreated.post_id === variables.post_id
+            : true;
+        }
+      ),
     },
     commentUpdated: {
       subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("commentUpdated"),
