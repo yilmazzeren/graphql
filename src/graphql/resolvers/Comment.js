@@ -8,4 +8,4 @@ const Comment = {
   },
 };
 
-module.exports = Comment;
+export default Comment;

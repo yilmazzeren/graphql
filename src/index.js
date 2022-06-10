@@ -1,15 +1,15 @@
-const { ApolloServer } = require("apollo-server-express");
-const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
-const { execute, subscribe } = require("graphql");
-const { SubscriptionServer } = require("subscriptions-transport-ws");
-const { makeExecutableSchema } = require("@graphql-tools/schema");
-const express = require("express");
-const http = require("http");
+import { ApolloServer } from "apollo-server-express";
+import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
+import { execute, subscribe } from "graphql";
+import { SubscriptionServer } from "subscriptions-transport-ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import express from "express";
+import http from "http";
 
-const pubsub = require("./pubsub");
-const { typeDefs } = require("./graphql/schema");
-const db = require("./data");
-const resolvers = require("./graphql/resolvers");
+import pubsub from "./pubsub";
+import typeDefs from "./graphql/schema";
+import db from "./data";
+import resolvers from "./graphql/resolvers";
 
 (async function startApolloServer(typeDefs, resolvers) {
   const app = express();

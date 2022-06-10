@@ -1,4 +1,4 @@
-const { withFilter } = require("graphql-subscriptions");
+import { withFilter } from "graphql-subscriptions";
 const Subscription = {
   //User
 
@@ -51,4 +51,4 @@ const Subscription = {
   },
 };
 
-module.exports = Subscription;
+export default Subscription;

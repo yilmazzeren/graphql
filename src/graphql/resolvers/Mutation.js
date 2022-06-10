@@ -1,4 +1,4 @@
-const { nanoid } = require("nanoid");
+import { nanoid } from "nanoid";
 
 const Mutation = {
   //User
@@ -139,4 +139,4 @@ const Mutation = {
   },
 };
 
-module.exports = Mutation;
+export default Mutation;

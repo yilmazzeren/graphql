@@ -1,11 +1,11 @@
-const Query = require("./Query");
-const Mutation = require("./Mutation");
-const Subscription = require("./Subscription");
-const User = require("./User");
-const Post = require("./Post");
-const Comment = require("./Comment");
+import Query from "./Query";
+import Mutation from "./Mutation";
+import Subscription from "./Subscription";
+import User from "./User";
+import Post from "./Post";
+import Comment from "./Comment";
 
-module.exports = {
+export default {
   Query,
   Mutation,
   Subscription,

@@ -13,4 +13,4 @@ const Query = {
     db.comments.find((comment) => comment.id === args.id),
 };
 
-module.exports = Query;
+export default Query;
