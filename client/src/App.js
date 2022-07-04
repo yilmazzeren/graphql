@@ -2,9 +2,13 @@ import { Col, Row } from "antd";
 import styles from "./components/styles.module.css";
 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
-import NewPost from "./pages/NewPost";
+
 import HeaderMenu from "./components/HeaderMenu";
+
+//Pages
+import Home from "./pages/Home";
+import Post from "./pages/Post";
+import NewPost from "./pages/NewPost";
 
 const data = [
   {
@@ -48,6 +52,7 @@ function App() {
             <div className={styles.content}>
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/post/:id" element={<Post />} />
                 <Route path="/new" element={<NewPost />} />
               </Routes>
             </div>

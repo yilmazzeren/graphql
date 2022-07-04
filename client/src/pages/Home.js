@@ -1,54 +1,42 @@
 import React from "react";
-import { Avatar, List, Skeleton } from "antd";
+import { Avatar, List } from "antd";
+import { gql, useQuery } from "@apollo/client";
+import { Link } from "react-router-dom";
+const GET_POSTS = gql`
+  query getAllPosts {
+    posts {
+      id
+      title
+      description
+      user {
+        profile_photo
+      }
+    }
+  }
+`;
+
 export default function Home() {
-  const data = [
-    {
-      gender: "male",
-      name: {
-        title: "Mr",
-        first: "Leo",
-        last: "Holmes",
-      },
-      email: "leo.holmes@example.com",
-      picture: {
-        large: "https://randomuser.me/api/portraits/men/39.jpg",
-        medium: "https://randomuser.me/api/portraits/med/men/39.jpg",
-        thumbnail: "https://randomuser.me/api/portraits/thumb/men/39.jpg",
-      },
-      nat: "GB",
-    },
-    {
-      gender: "male",
-      name: {
-        title: "Mr",
-        first: "Leo",
-        last: "Holmes",
-      },
-      email: "leo.holmes@example.com",
-      picture: {
-        large: "https://randomuser.me/api/portraits/men/39.jpg",
-        medium: "https://randomuser.me/api/portraits/med/men/39.jpg",
-        thumbnail: "https://randomuser.me/api/portraits/thumb/men/39.jpg",
-      },
-      nat: "GB",
-    },
-  ];
+  const { loading, error, data } = useQuery(GET_POSTS);
+  if (loading) return "Loading...";
+  if (error) return `Error! ${error.message}`;
   return (
     <List
       className="demo-loadmore-list"
       loading={false}
       itemLayout="horizontal"
       //loadMore={loadMore}
-      dataSource={data}
+      dataSource={data.posts}
       renderItem={(item) => (
         <List.Item>
-          <Skeleton avatar title={false} loading={item.loading} active>
-            <List.Item.Meta
-              avatar={<Avatar src={item.picture.large} />}
-              title={<a href="https://ant.design">{item.name?.last}</a>}
-              description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-            />
-          </Skeleton>
+          <List.Item.Meta
+            avatar={<Avatar src={item.user.profile_photo} />}
+            title={<Link to={`post/${item.id}`}>{item.title}</Link>}
+            description={
+              <Link style={{ color: "gray" }} to={`post/${item.id}`}>
+                {item.description}
+              </Link>
+            }
+          />
         </List.Item>
       )}
     />
