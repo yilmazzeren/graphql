@@ -5,17 +5,20 @@ const typeDefs = gql`
     id: ID!
     fullName: String!
     age: Int!
+    profile_photo: String
     posts: [Post]
     comments: [Comment]
   }
 
   input CreateUserInput {
     fullName: String!
+    profile_photo: String
     age: Int!
   }
 
   input UpdateUserInput {
     fullName: String
+    profile_photo: String
     age: Int
   }
 
@@ -23,6 +26,8 @@ const typeDefs = gql`
   type Post {
     id: ID!
     title: String!
+    description: String
+    cover: String
     user_id: ID!
     user: User
     comments: [Comment]
@@ -30,12 +35,16 @@ const typeDefs = gql`
 
   input CreatePostInput {
     title: String!
+    description: String
     user_id: ID!
+    cover: String
   }
 
   input UpdatePostInput {
     title: String
+    description: String
     user_id: ID
+    cover: String
   }
 
   #Comment
