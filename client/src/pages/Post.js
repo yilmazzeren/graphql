@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import { Typography, Image } from "antd";
+import Comments from "./Comments";
+
 const { Title } = Typography;
 const GET_POST = gql`
   query Post($id: ID!) {
@@ -28,6 +30,7 @@ export default function Post() {
       <Title level={3}>{post.title}</Title>
       <Image width={400} src={post.cover} />
       <div>{post.description}</div>
+      <Comments post_id={id} />
     </div>
   );
 }

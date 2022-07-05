@@ -15,3 +15,7 @@
     font-size: 16px;
     font-weight: bold;
 }
+.showCommentsBtnContainer {
+    display: flex;
+    justify-content: center;
+}
